@@ -29,7 +29,7 @@ output "users" {
 }
 resource "random_pet" "zoo_animals" {
 
-  for_each = local.zooJson.zoo
+  for_each = toset(local.zooJson.zoo)
   keepers = {
     name = each.value.name
   }
