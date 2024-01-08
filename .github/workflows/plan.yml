@@ -18,9 +18,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # Runs a set of commands using the runners shell
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
+
+      - name: Load TF state
+        uses: actions/download-artifact@v3
+        with:
+          name: tfstate
+          path: terraform.tfstate
+        continue-on-error: true
+
       - name: plan
         run: |
           cat ./policy/policy.json | jq
           sha1sum ./policy/policy.json
+          terraform init
+          terraform plan -out=plan.tfplan
+      
+      - name: Save TF state
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfstate
+          path: terraform.tfstate
           
