@@ -13,5 +13,5 @@ provider "random" {
 
 resource "random_pet" "example" {
   # Configuration options
-length = 4
+length = 2
 }
