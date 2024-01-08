@@ -29,12 +29,28 @@ jobs:
         with:
           terraform_version: 1.6.6
 
-      - name: Load TF state
-        uses: actions/download-artifact@v3
-        with:
-          name: tfstate
-          path: terraform.tfstate
-        continue-on-error: true
+      # - name: Load TF state
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: tfstate
+      #     path: terraform.tfstate
+      #   continue-on-error: true
+      - id: getTerraformPlan
+        run: |
+          $Repo = "${{ github.repository }}"
+          $BaseUri = "https://api.github.com"
+          $ArtifactUri = "$BaseUri/repos/$Repo/actions/artifacts"
+          $Token = "${{ github.token }}" | ConvertTo-SecureString -AsPlainText
+          $RestResponse = Invoke-RestMethod -Authentication Bearer -Uri $ArtifactUri -Token $Token | Select-Object -ExpandProperty artifacts
+          if ($RestResponse){
+            $MostRecentArtifactURI = $RestResponse | Sort-Object -Property created_at -Descending | where name -eq "tfplan" | Select-Object -First 1 | Select-Object -ExpandProperty archive_download_url
+            Write-Host "Most recent artifact URI = $MostRecentArtifactURI"
+            if ($MostRecentArtifactURI){
+              Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./plan.zip
+              Expand-Archive ./plan.zip
+            }
+          }
+        shell: pwsh
 
       - name: Load TF plan
         uses: actions/download-artifact@v3
