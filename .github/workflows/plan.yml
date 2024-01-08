@@ -28,6 +28,7 @@ jobs:
         with:
           name: tfstate
           path: terraform.tfstate
+        continue-on-error: true
 
       - name: plan
         run: |
