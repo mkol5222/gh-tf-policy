@@ -59,7 +59,9 @@ jobs:
               Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./state.zip
               Expand-Archive ./state.zip
               Write-Host "Extracted state.zip"
-              gci -Recurse
+              Move-Item -Path ./state/terraform.tfstate -Destination ./terraform.tfstate
+              Write-Host "Terraform state:"
+              gci terraform.tfstate
             }
           }
         shell: pwsh
