@@ -1,1 +1,22 @@
-{ "a": 14, "B": "hello", "zoo": [{"name":"lion", "len":2}, {"name":"tiger", "len":3}, {"name":"bear", "len":3}]}
+{
+    "a": 14,
+    "B": "hello",
+    "zoo": [
+        {
+            "name": "lion",
+            "len": 2
+        },
+        {
+            "name": "tiger",
+            "len": 3
+        },
+        {
+            "name": "bear",
+            "len": 3
+        },
+        {
+            "name": "elephant",
+            "len": 8
+        }
+    ]
+}
