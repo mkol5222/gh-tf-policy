@@ -5,7 +5,7 @@
 @branch=plan
 
 @policy={{$dotenv NEWPOLICY}}
-@pat={{$dotenv PATOLD}}
+@pat={{$dotenv PAT}}
 
 ###
 # first we need sha1 of previous policy
