@@ -35,8 +35,8 @@ jobs:
       #     name: tfstate
       #     path: terraform.tfstate
       #   continue-on-error: true
-      - id: getTerraformPlan
-        name: Get Terraform Plan
+      - id: getTerraformFiles
+        name: Get Terraform Plan and State
         run: |
           $Repo = "${{ github.repository }}"
           $BaseUri = "https://api.github.com"
@@ -45,25 +45,31 @@ jobs:
           $RestResponse = Invoke-RestMethod -Authentication Bearer -Uri $ArtifactUri -Token $Token | Select-Object -ExpandProperty artifacts
           if ($RestResponse){
             $MostRecentArtifactURI = $RestResponse | Sort-Object -Property created_at -Descending | where name -eq "tfplan" | Select-Object -First 1 | Select-Object -ExpandProperty archive_download_url
-            Write-Host "Most recent artifact URI = $MostRecentArtifactURI"
+            Write-Host "Most recent PLAN artifact URI = $MostRecentArtifactURI"
             if ($MostRecentArtifactURI){
-              Write-Host "Dowlnoading artifact to plan.zip"
+              Write-Host "Downloading artifact to plan.zip"
               Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./plan.zip
               Expand-Archive ./plan.zip
               Write-Host "Extracted plan.zip"
-              pwd
-              gci -Recurse 
-              pwd
+            }
+            $MostRecentArtifactURI = $RestResponse | Sort-Object -Property created_at -Descending | where name -eq "tfstate" | Select-Object -First 1 | Select-Object -ExpandProperty archive_download_url
+            Write-Host "Most recent STATE artifact URI = $MostRecentArtifactURI"
+            if ($MostRecentArtifactURI){
+              Write-Host "Downloading artifact to state.zip"
+              Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./state.zip
+              Expand-Archive ./state.zip
+              Write-Host "Extracted state.zip"
+              gci -Recurse
             }
           }
         shell: pwsh
 
-      - name: Load TF plan
-        uses: actions/download-artifact@v3
-        with:
-          name: tfplan
-          path: plan.tfplan
-        continue-on-error: true
+      # - name: Load TF plan
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: tfplan
+      #     path: plan.tfplan
+      #   continue-on-error: true
 
       - name: terraform
         run: |
@@ -73,9 +79,7 @@ jobs:
           terraform init
           
           if [ "$DO_APPLY" == "true" ]; then
-          pwd
-            ls -l /home/runner/work/gh-tf-policy/gh-tf-policy/
-            terraform apply -auto-approve /home/runner/work/gh-tf-policy/gh-tf-policy/plan.tfplan
+            terraform apply -auto-approve plan/plan.tfplan
           else
             terraform plan -out=plan.tfplan
           fi
