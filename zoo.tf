@@ -29,11 +29,15 @@ locals {
 output "animalNames" {
     value = local.animalNames
 }
-resource "random_pet" "zoo_animals" {
 
-  for_each = local.animals
-  keepers = {
-    name = each.value.name
-  }
-  length = each.value.len
+output "animals" {
+    value = local.animals
 }
+# resource "random_pet" "zoo_animals" {
+
+#   for_each = local.animals
+#   keepers = {
+#     name = each.value.name
+#   }
+#   length = each.value.len
+# }
