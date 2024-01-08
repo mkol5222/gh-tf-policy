@@ -58,8 +58,35 @@ X-GitHub-Api-Version: 2022-11-28
 
 @runId={{getRuns.response.body.workflow_runs.0.id}}
 @logsUrl={{getRuns.response.body.workflow_runs.0.logs_url}}
-# https://api.github.com/repos/${owner}/${repo}/actions/runs/${runId}/logs`
+# https://api.github.com/repos/${owner}/${repo}/actions/runs/${runId}/logs
 
 GET {{logsUrl}}
 authorization: Bearer {{pat}}
+
+
+###
+# list all workflows - e.g. to run one of them later
+# @name getWorkflows
+
+GET https://api.github.com/repos/{{owner}}/{{repo}}/actions/workflows
+authorization: Bearer {{pat}}
+
+###
+# run workflow
+# requires PAT with actions:write
+@workflowId={{getWorkflows.response.body.workflows.0.id}}
+@workflowName={{getWorkflows.response.body.workflows.0.name}}
+
+# notice request body input apply false/true
+
+POST https://api.github.com/repos/{{owner}}/{{repo}}/actions/workflows/{{workflowId}}/dispatches
+authorization: Bearer {{pat}}
+Content-Type: application/json
+
+{
+  "ref": "{{branch}}",
+  "inputs": {
+    "apply": true
+  }
+}
 

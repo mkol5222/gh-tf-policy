@@ -1,1 +1,1 @@
-{ "a": 14, "B": "hello"}
+{ "a": 14, "B": "hello", "zzz": [{"name":"lion", "len":1}, {"name":"tiger", "len":2}, {"name":"bear", "len":3}]}
