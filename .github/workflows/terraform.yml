@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       apply:
-        description: 'Do terraform apply based on plan.tfplan stored as artifact'
+        description: 'Do terraform apply based on plan.tfplan stored as artifact (planing otherwise)'
         default: false
         required: false
         type: boolean
@@ -81,6 +81,7 @@ jobs:
           terraform init
           
           if [ "$DO_APPLY" == "true" ]; then
+            terraform show plan/plan.tfplan
             terraform apply -auto-approve plan/plan.tfplan
           else
             terraform plan -out=plan.tfplan
