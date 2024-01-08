@@ -85,6 +85,7 @@ jobs:
             terraform apply -auto-approve plan/plan.tfplan
           else
             terraform plan -out=plan.tfplan
+            terraform show -json plan.tfplan > plan.json
           fi
         env:
           DO_APPLY: ${{ inputs.apply }}
@@ -96,6 +97,12 @@ jobs:
           path: plan.tfplan
         continue-on-error: true
 
+      - name: Save TF plan JSON
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplanjson
+          path: plan.json
+        continue-on-error: true
 
       - name: Save TF state
         uses: actions/upload-artifact@v3
