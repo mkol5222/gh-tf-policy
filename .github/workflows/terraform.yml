@@ -3,8 +3,8 @@
 name: Terraform
 
 on:
-  # push:
-  #   branches: [ "plan" ]
+  push:
+    branches: [ "plan" ]
     
   workflow_dispatch:
     inputs:
