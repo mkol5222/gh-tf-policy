@@ -23,7 +23,7 @@ authorization: token {{pat}}
 Content-Type: application/json
 
 {
-  "message": "policy update",
+  "message": "api: updating policy.json",
   "content": "{{policy}}",
   "branch": "{{branch}}",
   "sha": "{{getPolicyInfo.response.body.sha}}"
