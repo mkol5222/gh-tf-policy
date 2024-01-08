@@ -73,11 +73,11 @@ jobs:
           terraform init
           
           if [ "$DO_APPLY" == "true" ]; then
-            terraform apply -auto-approve plan.tfplan
-          else
-            pwd
+          pwd
             ls -l /home/runner/work/gh-tf-policy/gh-tf-policy/
-            terraform plan -out=/home/runner/work/gh-tf-policy/gh-tf-policy/plan.tfplan
+            terraform apply -auto-approve /home/runner/work/gh-tf-policy/gh-tf-policy/plan.tfplan
+          else
+            terraform plan -out=plan.tfplan
           fi
         env:
           DO_APPLY: ${{ inputs.apply }}
