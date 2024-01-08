@@ -41,8 +41,25 @@ X-GitHub-Api-Version: 2022-11-28
 # list of workflow runs
 # on branch and with status completed
 # and created today
+# @name getRuns
 @today={{$localDatetime 'YYYY-MM-DD'}}
 GET https://api.github.com/repos/{{owner}}/{{repo}}/actions/runs?branch={{branch}}&status=completed&created={{today}}
 authorization: Bearer {{pat}}
 Accept: application/vnd.github+json
 X-GitHub-Api-Version: 2022-11-28
+
+###
+# access workflow run logs
+#
+# @name getLogs
+
+# NOTICE: this one returns redirect to file, so use Rest Clint: Copy as cURL and add -L -o logs.zip to download logs
+#    consider first cd to temp folder:      cd $(mktemp -d)
+
+@runId={{getRuns.response.body.workflow_runs.0.id}}
+@logsUrl={{getRuns.response.body.workflow_runs.0.logs_url}}
+# https://api.github.com/repos/${owner}/${repo}/actions/runs/${runId}/logs`
+
+GET {{logsUrl}}
+authorization: Bearer {{pat}}
+
