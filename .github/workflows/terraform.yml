@@ -46,8 +46,13 @@ jobs:
             $MostRecentArtifactURI = $RestResponse | Sort-Object -Property created_at -Descending | where name -eq "tfplan" | Select-Object -First 1 | Select-Object -ExpandProperty archive_download_url
             Write-Host "Most recent artifact URI = $MostRecentArtifactURI"
             if ($MostRecentArtifactURI){
+              Write-Host "Dowlnoading artifact to plan.zip"
               Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./plan.zip
               Expand-Archive ./plan.zip
+              Write-Host "Extracted plan.zip"
+              pwd
+              gci -Recurse 
+              pwd
             }
           }
         shell: pwsh
