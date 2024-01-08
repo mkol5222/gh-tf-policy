@@ -36,6 +36,7 @@ jobs:
       #     path: terraform.tfstate
       #   continue-on-error: true
       - id: getTerraformPlan
+        name: Get Terraform Plan
         run: |
           $Repo = "${{ github.repository }}"
           $BaseUri = "https://api.github.com"
