@@ -3,8 +3,8 @@
 name: TF
 
 on:
-  push:
-    branches: [ "plan" ]
+#   push:
+#     branches: [ "plan" ]
     
   workflow_dispatch:
 
@@ -30,23 +30,29 @@ jobs:
           path: terraform.tfstate
         continue-on-error: true
 
-      - name: plan
-        run: |
-          cat ./policy/policy.json | jq
-          sha1sum ./policy/policy.json
-          terraform init
-          terraform plan -out=plan.tfplan
-      
-      - name: Save TF plan
-        uses: actions/upload-artifact@v3
+      - name: Load TF plan
+        uses: actions/download-artifact@v3
         with:
           name: tfplan
           path: plan.tfplan
 
-      # - name: Save TF state
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: tfstate
-      #     path: terraform.tfstate
+      - name: apply
+        run: |
+          cat ./policy/policy.json | jq
+          sha1sum ./policy/policy.json
+          terraform init
+          terraform apply -auto-approve plan.tfplan
+      
+    #   - name: Save TF plan
+    #     uses: actions/upload-artifact@v3
+    #     with:
+    #       name: tfplan
+    #       path: plan.tfplan
+
+      - name: Save TF state
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfstate
+          path: terraform.tfstate
       
           
