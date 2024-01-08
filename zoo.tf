@@ -21,15 +21,17 @@ locals {
     zooJson = jsondecode(file("${path.module}/policy/policy.json"))
 
     # get all users
-    animals = [for animal in local.zooJson.zoo : animal.name]
+    animalNames = [for animal in local.zooJson.zoo : animal.name]
+
+    animals = [for animal in local.zooJson.zoo : animal]
 }
 
-output "users" {
-    value = local.animals
+output "animalNames" {
+    value = local.animalNames
 }
 resource "random_pet" "zoo_animals" {
 
-  for_each = toset(local.zooJson.zoo)
+  for_each = local.animals
   keepers = {
     name = each.value.name
   }
