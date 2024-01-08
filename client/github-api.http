@@ -90,3 +90,26 @@ Content-Type: application/json
   }
 }
 
+###
+# get last run artifacts
+# @name getLastRunArtifacts
+@lastRunId={{getRuns.response.body.workflow_runs.0.id}}
+
+GET https://api.github.com/repos/{{owner}}/{{repo}}/actions/runs/{{lastRunId}}/artifacts
+authorization: Bearer {{pat}}
+Content-Type: application/json
+
+
+###
+# Download last run first artifact
+# 
+# use REST Client: Copy as cURL
+#  and add 
+#   -L -o artifact.zip 
+#  to download
+#  after cd $(mktemp -d)
+@lastArtifactDownloadUrl = {{getLastRunArtifacts.response.body.artifacts.0.archive_download_url}}
+@lastArtifactUrl = {{getLastRunArtifacts.response.body.artifacts.0.url}}
+
+GET {{lastArtifactDownloadUrl}}
+authorization: Bearer {{pat}}
