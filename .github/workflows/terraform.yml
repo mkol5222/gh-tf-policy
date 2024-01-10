@@ -48,20 +48,28 @@ jobs:
             Write-Host "Most recent PLAN artifact URI = $MostRecentArtifactURI"
             if ($MostRecentArtifactURI){
               Write-Host "Downloading artifact to plan.zip"
-              Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./plan.zip
-              Expand-Archive ./plan.zip
-              Write-Host "Extracted plan.zip"
+              try {
+                Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./plan.zip
+                Expand-Archive ./plan.zip
+                Write-Host "Extracted plan.zip"
+              } catch {
+                Write-Host "Error downloading plan artifact: $MostRecentArtifactURI"
+              }
             }
             $MostRecentArtifactURI = $RestResponse | Sort-Object -Property created_at -Descending | where name -eq "tfstate" | Select-Object -First 1 | Select-Object -ExpandProperty archive_download_url
             Write-Host "Most recent STATE artifact URI = $MostRecentArtifactURI"
             if ($MostRecentArtifactURI){
               Write-Host "Downloading artifact to state.zip"
-              Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./state.zip
-              Expand-Archive ./state.zip
-              Write-Host "Extracted state.zip"
-              Move-Item -Path ./state/terraform.tfstate -Destination ./terraform.tfstate
-              Write-Host "Terraform state:"
-              gci terraform.tfstate
+              try {
+                Invoke-RestMethod -uri $MostRecentArtifactURI -Token $Token -Authentication bearer -outfile ./state.zip
+                Expand-Archive ./state.zip
+                Write-Host "Extracted state.zip"
+                Move-Item -Path ./state/terraform.tfstate -Destination ./terraform.tfstate
+                Write-Host "Terraform state:"
+                gci terraform.tfstate
+              } catch {
+                Write-Host "Error downloading state artifact: $MostRecentArtifactURI"
+              }
             }
           }
         shell: pwsh
