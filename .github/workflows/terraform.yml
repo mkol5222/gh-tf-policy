@@ -76,12 +76,12 @@ jobs:
         shell: pwsh
         continue-on-error: true
 
-      # - name: Load TF plan
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: tfplan
-      #     path: plan.tfplan
-      #   continue-on-error: true
+      - name: Load TF plan
+        uses: actions/download-artifact@v3
+        with:
+          name: tfplanjson
+          path: tfplan.json
+        continue-on-error: true
 
       - name: terraform
         run: |
